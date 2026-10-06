@@ -1,8 +1,8 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace Darkforest.Player
 {
-    /// <summary>  ÀÌ°Ç ³Ê°¡ ¸í·ÉÇÑ ÇÁ·ÒÇÁÆ® ³»¿ëÀ» ¿µ¾î·ÎÇÑ°Å¾ß
+    /// <summary>  ì´ê±´ ë„ˆê°€ ëª…ë ¹í•œ í”„ë¡¬í”„íŠ¸ ë‚´ìš©ì„ ì˜ì–´ë¡œí•œê±°ì•¼
     /// Isaac-style top-down movement: 8 directions on WASD, quick acceleration
     /// and a short slide when the keys are released. Arrow keys are reserved for shooting.
     /// </summary>
@@ -39,7 +39,7 @@ namespace Darkforest.Player
             set => moveSpeed = Mathf.Max(0f, value);
         }
 
-        private void Awake() //ÇÊ¿äÇÑ°Å Ã£±â
+        private void Awake() //í•„ìš”í•œê±° ì°¾ê¸°
         {
             rb = GetComponent<Rigidbody2D>();
             rb.gravityScale = 0f;
@@ -48,7 +48,7 @@ namespace Darkforest.Player
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
 
-        private void Update() //inputÀ¸·Î ÀÎ½Ä
+        private void Update() //inputìœ¼ë¡œ ì¸ì‹
         {
             // Raw axes on fixed keys: no Input Manager smoothing, and arrow keys stay free for shooting.
             float x = 0f, y = 0f;
@@ -62,21 +62,21 @@ namespace Darkforest.Player
                 FacingDirection = input;
         }
 
-        private void FixedUpdate()//¿òÁ÷ÀÌ°Ô ÇÏ´ÂÄÚµå
+        private void FixedUpdate()//ì›€ì§ì´ê²Œ í•˜ëŠ”ì½”ë“œ
         {
             Vector2 target = input * moveSpeed;
             float rate = input == Vector2.zero ? deceleration : acceleration;
             rb.velocity = Vector2.MoveTowards(rb.velocity, target, rate * Time.fixedDeltaTime);
         }
 
-        private void OnDisable() //¸ØÃß±â
+        private void OnDisable() //ë©ˆì¶”ê¸°
         {
             input = Vector2.zero;
             if (rb != null)
                 rb.velocity = Vector2.zero;
         }
 
-        private void OnValidate() //°¡¼Ó¹× °¨¼Ó
+        private void OnValidate() //ê°€ì†ë° ê°ì†
         {
             moveSpeed = Mathf.Max(0f, moveSpeed);
             acceleration = Mathf.Max(0.01f, acceleration);
