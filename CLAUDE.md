@@ -27,11 +27,11 @@ Two editors are installed under `C:\Program Files\Unity\Hub\Editor\` (2022.3.62f
 
 - Every file/folder under `Assets/` needs a matching `.meta` file holding its GUID. When creating assets from the CLI, let Unity generate the `.meta` on next import. When moving or renaming, move the `.meta` along with the asset, or references will break.
 - `Library/`, `Temp/`, `Logs/`, `UserSettings/` and generated `.sln`/`.csproj` files are local/regenerated. Never edit or commit them. The project is a git repo (branch `main`). It has a Unity `.gitignore` and a `.gitattributes` that sends binary assets (png, psd, wav, mp3, fbx, …) through Git LFS. Keep `.meta` files tracked.
+- Scripts compile only inside the Unity Editor (or batchmode). There is no standalone `dotnet build` workflow.
 
 ## Git workflow
 
-After each completed change, commit the work with a clear English message: `Assets/` with its `.meta` files, plus `Packages/`, `ProjectSettings/` and docs. Then run `git push origin main`.
-- Scripts compile only inside the Unity Editor (or batchmode). There is no standalone `dotnet build` workflow.
+After each completed change, commit the work with a clear English message: `Assets/` with its `.meta` files, plus `Packages/`, `ProjectSettings/` and docs. Then run `git push origin main`. The remote is `https://github.com/yeonwoo9010-ship-it/darkforest` (private), and `gh` is logged in as `yeonwoo9010-ship-it`.
 
 ## Commands (batchmode, from the project root)
 
