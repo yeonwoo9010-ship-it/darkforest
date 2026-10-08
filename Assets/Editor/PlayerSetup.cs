@@ -1,4 +1,5 @@
 using System.IO;
+using Darkforest.CameraSystem;
 using Darkforest.Player;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -118,6 +119,37 @@ namespace Darkforest.EditorTools
             }
         }
 
+        [MenuItem("Darkforest/Setup Room Camera")]
+        public static void SetupRoomCamera()
+        {
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
+
+            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            Camera cam = Camera.main != null ? Camera.main : Object.FindObjectOfType<Camera>();
+            if (cam == null)
+            {
+                Debug.LogError("[PlayerSetup] No camera found in SampleScene.");
+                return;
+            }
+
+            SetupCamera(cam);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+            Debug.Log("[PlayerSetup] Main Camera now uses RoomCamera (Isaac-style 16:9 room view).");
+        }
+
+        private static void SetupCamera(Camera cam)
+        {
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = CameraBackground;
+            cam.orthographic = true;
+            cam.rect = new Rect(0f, 0f, 1f, 1f); // RoomCamera letterboxes at runtime
+            cam.transform.position = new Vector3(0f, 0f, -10f);
+            if (cam.GetComponent<RoomCamera>() == null)
+                cam.gameObject.AddComponent<RoomCamera>();
+        }
+
         private static void PlaceInScene(GameObject prefab)
         {
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
@@ -134,10 +166,7 @@ namespace Darkforest.EditorTools
 
             Camera cam = Camera.main != null ? Camera.main : Object.FindObjectOfType<Camera>();
             if (cam != null)
-            {
-                cam.clearFlags = CameraClearFlags.SolidColor;
-                cam.backgroundColor = CameraBackground;
-            }
+                SetupCamera(cam);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
