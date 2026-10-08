@@ -32,7 +32,7 @@ Two editors are installed under `C:\Program Files\Unity\Hub\Editor\` (2022.3.62f
 
 ## Git workflow
 
-After each completed change, commit the work with a clear English message: `Assets/` with its `.meta` files, plus `Packages/`, `ProjectSettings/` and docs. Then run `git push origin main`. The remote is `https://github.com/yeonwoo9010-ship-it/darkforest` (private), and `gh` is logged in as `yeonwoo9010-ship-it`.
+After each completed change, commit locally with a clear English message: `Assets/` with its `.meta` files, plus `Packages/`, `ProjectSettings/` and docs. **Don't push after every change.** Run `git push origin main` only when the user sends `!작업종료` ("end of work"). Then report what was pushed. The remote is `https://github.com/yeonwoo9010-ship-it/darkforest` (private), and `gh` is logged in as `yeonwoo9010-ship-it`.
 
 ## Commands (batchmode, from the project root)
 
