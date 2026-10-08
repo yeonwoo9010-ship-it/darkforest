@@ -1,4 +1,5 @@
 using System.IO;
+using Darkforest.Rooms;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -80,6 +81,14 @@ namespace Darkforest.EditorTools
 
             floor.CompressBounds();
             walls.CompressBounds();
+
+            // Faint outline on the floor tile under the player, drawn above the floor and below the walls.
+            var highlight = new GameObject("Tile Highlight", typeof(SpriteRenderer), typeof(TileHighlighter));
+            highlight.transform.SetParent(room.transform, false);
+            highlight.GetComponent<SpriteRenderer>().sortingOrder = -9;
+            var so = new SerializedObject(highlight.GetComponent<TileHighlighter>());
+            so.FindProperty("floor").objectReferenceValue = floor;
+            so.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static Tilemap CreateTilemap(Transform parent, string name, int sortingOrder)
