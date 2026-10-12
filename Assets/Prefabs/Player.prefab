@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3164720058732571147}
   - component: {fileID: 8558629771414355262}
   - component: {fileID: 605523461289078228}
+  - component: {fileID: 3501814116733944365}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -164,3 +165,19 @@ MonoBehaviour:
   moveSpeed: 5
   acceleration: 60
   deceleration: 30
+--- !u!114 &3501814116733944365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7978847565035230170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab3019083fea8e4d8915ead00e0e1ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 3
+  invincibleTime: 1
+  blinkRenderer: {fileID: 0}
+  debugKeys: 1

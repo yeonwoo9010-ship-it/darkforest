@@ -110,6 +110,7 @@ namespace Darkforest.EditorTools
                 col.radius = 0.4f;
 
                 go.AddComponent<PlayerMovement>();
+                go.AddComponent<PlayerHealth>();
 
                 return PrefabUtility.SaveAsPrefabAsset(go, PrefabPath);
             }
