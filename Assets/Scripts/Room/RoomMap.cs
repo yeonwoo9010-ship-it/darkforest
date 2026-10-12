@@ -56,6 +56,19 @@ namespace Darkforest.Rooms
             return Mathf.Abs(local.x) <= Half && Mathf.Abs(local.y) <= Half;
         }
 
+        public Vector3Int WorldToCell(Vector3 worldPosition) => Grid.WorldToCell(worldPosition);
+
+        public Vector3 CellCenterWorld(Vector3Int cell) => Grid.GetCellCenterWorld(cell);
+
+        /// <summary>True if the cell is on the floor of the given room (walls and passages excluded).</summary>
+        public bool IsRoomFloorCell(Vector2Int room, Vector3Int cell)
+        {
+            if (!IsValidRoom(room))
+                return false;
+            Vector3Int local = cell - RoomCenterCell(room);
+            return Mathf.Abs(local.x) <= Half && Mathf.Abs(local.y) <= Half;
+        }
+
         /// <summary>Whether the room has a passage toward dir (up/down/left/right).</summary>
         public bool HasPassage(Vector2Int room, Vector2Int dir) => IsValidRoom(room) && IsValidRoom(room + dir);
 

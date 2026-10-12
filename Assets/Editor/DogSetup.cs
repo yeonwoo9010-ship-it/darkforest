@@ -1,5 +1,6 @@
 using System.IO;
 using Darkforest.Enemies;
+using Darkforest.Rooms;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -122,11 +123,9 @@ namespace Darkforest.EditorTools
                 sr.sprite = sprite;
                 sr.sortingOrder = 9; // just under the player
 
+                // Kinematic: GridMover drives it tile to tile; it still reports contacts with the player.
                 var rb = go.AddComponent<Rigidbody2D>();
-                rb.bodyType = RigidbodyType2D.Dynamic;
-                rb.gravityScale = 0f;
-                rb.freezeRotation = true;
-                rb.mass = 2f;
+                rb.bodyType = RigidbodyType2D.Kinematic;
                 rb.interpolation = RigidbodyInterpolation2D.Interpolate;
                 rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
                 rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
@@ -134,6 +133,7 @@ namespace Darkforest.EditorTools
                 var col = go.AddComponent<BoxCollider2D>();
                 col.size = new Vector2(0.8f, 0.8f);
 
+                go.AddComponent<GridMover>();
                 go.AddComponent<Dog>();
 
                 return PrefabUtility.SaveAsPrefabAsset(go, PrefabPath);

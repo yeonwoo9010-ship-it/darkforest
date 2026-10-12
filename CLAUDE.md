@@ -18,13 +18,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `Assets/Scripts/Player/PlayerHealth.cs`, on the Player prefab, holds HP: `maxHealth` 3 (full, 2, 1, empty, matching the 4 life frames). `TakeDamage(int)` returns false while invincible or dead and gives `invincibleTime` 1 s of i-frames with sprite blinking. `Heal(int)`. Events: `HealthChanged(current, max)` (also raised in `Start`) and `Died`; on death `PlayerMovement` is disabled. Editor-only debug keys: K = damage, H = heal. Future monsters and traps should call `TakeDamage`.
 - `Assets/Scripts/UI/HealthUI.cs` (`Darkforest.UI`) sits on `HUD/Life`. It maps the lost-HP fraction onto `stages` (life1 = full … life4 = empty). The user drew the art in `Assets/Art/Ui/life1-4.png` (64 px, imported as Point/PPU 64/uncompressed).
 - `Assets/Editor/HudSetup.cs` adds the **Darkforest/Create Health UI** menu, which is idempotent. It sets up the life sprite imports, adds `PlayerHealth` to the prefab, and builds the `HUD` canvas. The canvas is Screen Space - Camera on Main Camera, so it stays inside the letterboxed 16:9 area. It uses sorting order 2000 (above the room mask) and a CanvasScaler with a 1920×1080 reference. The icon is 128 px (2×), anchored top-left with a 40 px margin.
-- `Assets/Scripts/Enemies/Dog.cs` (`Darkforest.Enemies`) is the "dog" charger mob, a dynamic Rigidbody2D with a 0.8 BoxCollider2D. It has four states:
-  - `Wander`: slow random cardinal moves.
-  - `Charge`: starts when the player is in the same room and on the same tile row or column, with a clear `LinecastAll`. It runs at `chargeSpeed` 9 until it would leave its home room's floor or hits something.
-  - `Rest`: 0.6 s after a charge.
-  - `Stunned`: 2 s, standing still and tinted. It happens when its contact actually damages the player (`TakeDamage` returns true).
+- **Movement rule: only the player moves freely. Monsters and objects move tile to tile with `GridMover`.**
+- `Assets/Scripts/Room/GridMover.cs` (`Darkforest.Rooms`) drives a kinematic Rigidbody2D from one cell center to a neighboring one via `MovePosition`. A step always completes; `IsPaused` freezes it in place.
+  - **Reservation:** cells are reserved in a static dictionary, so movers never share a tile.
+  - **Staying in the room:** `stayInHomeRoom` keeps a mover on its room's floor via `RoomMap.IsRoomFloorCell`. Walls and passages are excluded.
+  - **API:** `TryStep(dir, tilesPerSecond)`, `Cell`, `IsMoving`, `LastDirection`, `HomeRoom` and the `Arrived` event.
 
-  The dog never leaves its home room; `CanMove` checks the front point with `RoomMap.TryGetRoomAt`.
+  Kinematic bodies still report contacts with the dynamic player. When checking positions in tests, read `Rigidbody2D.position`, because the transform is interpolated.
+- `Assets/Scripts/Enemies/Dog.cs` (`Darkforest.Enemies`) is the "dog" charger mob. It uses a `GridMover` and a 0.8 BoxCollider2D, and has four states:
+  - `Wander`: one tile at a time at 2 tiles/s, with random 0.3–1.2 s pauses.
+  - `Charge`: triggered when the player is in the same room and on the same tile row or column, with a clear `LinecastAll`. If the dog spots the player mid-step, it remembers the direction, finishes the tile, then charges. It charges tile by tile at 9 tiles/s until the next tile is blocked.
+  - `Rest`: 0.6 s after a charge.
+  - `Stunned`: 2 s, paused in place and tinted. It happens only when contact actually damages the player (`TakeDamage` returns true).
 - `Assets/Editor/DogSetup.cs` adds the **Darkforest/Create Dog** menu, which is idempotent. It generates `Assets/Art/Placeholder/dog.png` (32 px; it isn't overwritten if it already exists, so the user can replace the art), builds `Assets/Prefabs/Dog.prefab` and places one Dog at (-3, 3) in the start room.
 - Running PlayMode tests in batchmode flips `runInBackground` in ProjectSettings. Revert that before committing.
 - No `.asmdef` yet, so scripts compile into `Assembly-CSharp` / `Assembly-CSharp-Editor`.
