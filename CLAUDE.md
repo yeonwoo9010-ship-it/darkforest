@@ -18,6 +18,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `Assets/Scripts/Player/PlayerHealth.cs`, on the Player prefab, holds HP: `maxHealth` 3 (full, 2, 1, empty, matching the 4 life frames). `TakeDamage(int)` returns false while invincible or dead and gives `invincibleTime` 1 s of i-frames with sprite blinking. `Heal(int)`. Events: `HealthChanged(current, max)` (also raised in `Start`) and `Died`; on death `PlayerMovement` is disabled. Editor-only debug keys: K = damage, H = heal. Future monsters and traps should call `TakeDamage`.
 - `Assets/Scripts/UI/HealthUI.cs` (`Darkforest.UI`) sits on `HUD/Life`. It maps the lost-HP fraction onto `stages` (life1 = full … life4 = empty). The user drew the art in `Assets/Art/Ui/life1-4.png` (64 px, imported as Point/PPU 64/uncompressed).
 - `Assets/Editor/HudSetup.cs` adds the **Darkforest/Create Health UI** menu, which is idempotent. It sets up the life sprite imports, adds `PlayerHealth` to the prefab, and builds the `HUD` canvas. The canvas is Screen Space - Camera on Main Camera, so it stays inside the letterboxed 16:9 area. It uses sorting order 2000 (above the room mask) and a CanvasScaler with a 1920×1080 reference. The icon is 128 px (2×), anchored top-left with a 40 px margin.
+- `Assets/Scripts/Enemies/Dog.cs` (`Darkforest.Enemies`) is the "dog" charger mob, a dynamic Rigidbody2D with a 0.8 BoxCollider2D. It has four states:
+  - `Wander`: slow random cardinal moves.
+  - `Charge`: starts when the player is in the same room and on the same tile row or column, with a clear `LinecastAll`. It runs at `chargeSpeed` 9 until it would leave its home room's floor or hits something.
+  - `Rest`: 0.6 s after a charge.
+  - `Stunned`: 2 s, standing still and tinted. It happens when its contact actually damages the player (`TakeDamage` returns true).
+
+  The dog never leaves its home room; `CanMove` checks the front point with `RoomMap.TryGetRoomAt`.
+- `Assets/Editor/DogSetup.cs` adds the **Darkforest/Create Dog** menu, which is idempotent. It generates `Assets/Art/Placeholder/dog.png` (32 px; it isn't overwritten if it already exists, so the user can replace the art), builds `Assets/Prefabs/Dog.prefab` and places one Dog at (-3, 3) in the start room.
+- Running PlayMode tests in batchmode flips `runInBackground` in ProjectSettings. Revert that before committing.
 - No `.asmdef` yet, so scripts compile into `Assembly-CSharp` / `Assembly-CSharp-Editor`.
 
 Two editors are installed under `C:\Program Files\Unity\Hub\Editor\` (2022.3.62f3 and 6000.1.11f1). Always use **2022.3.62f3**. Opening the project in Unity 6 would upgrade it irreversibly.
